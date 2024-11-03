@@ -1,0 +1,24 @@
+services:
+    nordlynx:
+      image: ghcr.io/bubuntux/nordlynx
+      hostname: nordlynx
+      container_name: nordlynx
+      ports:
+          - "8080:8080"
+      cap_add:
+          - NET_ADMIN                             # required
+          - SYS_MODULE                            # maybe
+      env_file:
+        - ./local.env
+      sysctls:
+          - net.ipv4.conf.all.src_valid_mark=1   # maybe
+          - net.ipv4.conf.all.rp_filter=2        # maybe; set reverse path filter to loose mode
+          - net.ipv6.conf.all.disable_ipv6=1     # disable ipv6; recommended if using ipv4 only
+    torrent:
+      image: ghcr.io/linuxserver/qbittorrent
+      volumes:
+        - /media/mass-media/meetri/shared/:/data
+      depends_on:
+        - nordlynx
+      network_mode: service:nordlynx
+      restart: unless-stopped
