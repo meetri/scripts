@@ -30,7 +30,7 @@ services:
         - TORRENTING_PORT=6881
       volumes:
         - ./appdata:/config
-        - ./downloads/:/downloads
+        - /media/data/media:/downloads
       depends_on:
         - nordlynx
       network_mode: service:nordlynx
