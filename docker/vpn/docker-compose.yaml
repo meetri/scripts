@@ -4,20 +4,33 @@ services:
       hostname: nordlynx
       container_name: nordlynx
       ports:
-          - "8080:8080"
+        - 8080:8080
+        - 6881:6881
+        - 6881:6881/udp
       cap_add:
           - NET_ADMIN                             # required
           - SYS_MODULE                            # maybe
+      environment:
+        - QUERY=filters\[servers_groups\]\[identifier\]=legacy_p2p
+        - TZ=America/Los_Angeles
       env_file:
         - ./local.env
       sysctls:
           - net.ipv4.conf.all.src_valid_mark=1   # maybe
           - net.ipv4.conf.all.rp_filter=2        # maybe; set reverse path filter to loose mode
           - net.ipv6.conf.all.disable_ipv6=1     # disable ipv6; recommended if using ipv4 only
-    torrent:
-      image: ghcr.io/linuxserver/qbittorrent
+
+    qbittorrent:
+      image: lscr.io/linuxserver/qbittorrent:latest
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - TZ=Etc/UTC
+        - WEBUI_PORT=8080
+        - TORRENTING_PORT=6881
       volumes:
-        - /media/mass-media/meetri/shared/:/data
+        - ./appdata:/config
+        - ./downloads/:/downloads
       depends_on:
         - nordlynx
       network_mode: service:nordlynx
