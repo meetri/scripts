@@ -9,9 +9,14 @@ services:
     devices:
       - /dev/net/tun:/dev/net/tun
     ports:
+      # used by qbitorrent
       - 8888:8888/tcp # HTTP proxy
       - 8388:8388/tcp # Shadowsocks
       - 8388:8388/udp # Shadowsocks
+      # used by transmission
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
     volumes:
       - ./config:/gluetun
     env_file:
@@ -32,7 +37,7 @@ services:
       - TZ=America/Los_Angeles
       # Server list updater
       # See https://github.com/qdm12/gluetun-wiki/blob/main/setup/servers.md#update-the-vpn-servers-list
-      - UPDATER_PERIOD=24h
+      - UPDATER_PERIOD=2h
 
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
@@ -47,3 +52,24 @@ services:
       - /media/data/media:/downloads
     network_mode: service:gluetun
     restart: unless-stopped
+
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+      - TRANSMISSION_WEB_HOME= #optional
+      - USER=admin #optional
+      - PASS=nimda #optional
+      - WHITELIST= #optional
+      - PEERPORT= #optional
+      - HOST_WHITELIST= #optional
+    volumes:
+      - ./transmission:/config
+      - /media/data/media:/downloads
+      - /media/data/media/torrents/watch:/watch
+    network_mode: service:gluetun
+    restart: unless-stopped
+
