@@ -8,7 +8,7 @@ services:
       - ./config:/config
       - ./cache:/cache
       - type: bind
-        source: /mnt/media/Zedek/media/movies
+        source: /media/data/media/
         target: /media
       # Optional - extra fonts to be used during transcoding with subtitle burn-in
       - type: bind

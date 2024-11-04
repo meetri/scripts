@@ -1,0 +1,21 @@
+http:
+  routers:
+    jellyfin-https:
+      rule: "Host(`flix.ptechtoolz.com`) && PathPrefix(`/`)"
+      service: jellyfin
+      priority: 1000
+      tls:
+        certresolver: myresolver
+      entryPoints:
+        - websecure
+
+  middlewares:
+    jellyfin-https:
+      redirectscheme:
+        scheme: https
+
+  services:
+    jellyfin:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.4.142:8096/"

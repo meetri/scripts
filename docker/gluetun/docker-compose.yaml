@@ -20,12 +20,10 @@ services:
     volumes:
       - ./config:/gluetun
     env_file:
-      - ./global.env
       - ./local.env
     environment:
       # See https://github.com/qdm12/gluetun-wiki/tree/main/setup#setup
-      - VPN_SERVICE_PROVIDER=nordvpn
-      - SERVER_COUNTRIES=United States
+      # - VPN_SERVICE_PROVIDER=nordvpn
       - VPN_TYPE=wireguard
       # OpenVPN:
       # - OPENVPN_USER=
